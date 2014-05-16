@@ -1,7 +1,7 @@
 conduct.js
 ==========
 
-conduct.js is designed to respond to allow javascript to respond to media queries by executing callbacks as breakpoints are matched and unmatched. It is inspired by [enquire.js](https://github.com/WickyNilliams/enquire.js/) and arose from the need to gain additional control over the order of execution of breakpoint callbacks.
+conduct.js allows JavaScript to respond to media queries by executing callbacks as breakpoints are matched and unmatched. It is inspired by [enquire.js](https://github.com/WickyNilliams/enquire.js/) and arose from the need to gain additional control over the order of execution of breakpoint callbacks.
 
 Basic usage
 -----------

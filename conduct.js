@@ -60,7 +60,6 @@ var conduct = function(breakpoints) {
       if(!breakpoint.matched) {
 
         // Run the match callback and record this breakpoint as being currently matched
-        //console.log('match:', breakpoint.query)
         setTimeout(function() {
           breakpoint.match();
           breakpoint.matched = true;
@@ -72,7 +71,6 @@ var conduct = function(breakpoints) {
       if(breakpoint.matched) {
 
         // Run the unmatch callback and record this breakpoint as being not currently matched
-        //console.log('unmatch:', breakpoint.query)
         setTimeout(function() {
           breakpoint.unmatch();
           breakpoint.matched = false;
