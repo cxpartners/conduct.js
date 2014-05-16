@@ -10,10 +10,11 @@
  * For a given array of media queries and callbacks, we will register a resize event and test the media queries,
  * applying and unapplying the relevant callbacks at each point.
  *
- * @param Array breakpoints
- *   Array of callbacks and media queries in the following format.
- *
- *     [
+ * @param Object breakpoints
+ *   Object containing an Array (media_queries) of callbacks and media queries in the following format and
+ *   an optional Number (timeout) to supply a debounce delay in milliseconds.
+ *    {
+ *     'media_queries': [
  *       {
  *         query: 'max-width: 600px',
  *         match: function() {
@@ -32,8 +33,9 @@
  *           // This code will run when this media query moves from a matched state to an unmatched state
  *         }
  *       },
- *     ]
- *
+ *     ],
+ *      'timeout': 250
+ *    }
  * Important note: The order that these callbacks appear in the array is important.
  * When resizing *up*, the callbacks will be unmatched and matched in an ascending order.
  * When resizing *down*, the callbacks will be unmatched and matched in a descending order.
@@ -45,9 +47,30 @@ var conduct = function(breakpoints) {
 
   // Timeout to allow us to debounce the resize event
   var debounce = null;
-
   // Keep track of the window width between resize events so that we can know whether we are resizing up or down
   var windowSize = window.innerWidth;
+
+  // Allow for user extending of timeout delay
+  // http://andrewdupont.net/2009/08/28/deep-extending-objects-in-javascript/
+  Object.extend = function(destination, source) {
+    for (var property in source) {
+      if (source[property] && source[property].constructor &&
+        source[property].constructor === Object) {
+        destination[property] = destination[property] || {};
+        arguments.callee(destination[property], source[property]);
+      } else {
+        destination[property] = source[property];
+      }
+    }
+    return destination;
+  };
+
+  // sensible default for timeout and other configurables
+  var defaults = {
+    'timeout': 300
+  };
+
+  var queries = Object.extend(defaults, breakpoints);
 
   /**
    * Main function which is used to apply a given media query / callback combination
@@ -83,13 +106,13 @@ var conduct = function(breakpoints) {
    * Init
    * On page load, run over all the available breakpoints and apply them all
    */
-  for (var i=0; i<breakpoints.length; i++) {
+  for (var i=0; i<queries.media_queries.length; i++) {
 
     // By default, we'll record that the breakpoint is not matched
-    breakpoints[i].matched = false;
+    queries.media_queries[i].matched = false;
 
     // And then attempt to apply the breakpoint callback if it matches
-    apply(breakpoints[i]);
+    apply(queries.media_queries[i]);
   }
 
   /**
@@ -105,22 +128,22 @@ var conduct = function(breakpoints) {
       if(windowSize > window.innerWidth) {
 
         // Apply the breakpoints in reverse order, starting with the last one in the array
-        for (var i=breakpoints.length-1; i >= 0; i--) {
-          apply(breakpoints[i]);
+        for (var i=queries.media_queries.length-1; i >= 0; i--) {
+          apply(queries.media_queries[i]);
         }
 
       } else if (windowSize < window.innerWidth) {
         // Else if the last recorded window size was less than current, we are resizing up
         // Apply the breakpoints in normal, ascending order starting with the first one in the array
-        for (var j=0; j<breakpoints.length; j++) {
-          apply(breakpoints[j]);
+        for (var j=0; j<queries.media_queries.length; j++) {
+          apply(queries.media_queries[j]);
         }
       }
 
       // Record the current width of the window so we can compare it on the next resize event
       windowSize = window.innerWidth;
 
-    }, 300);
+    }, queries.timeout);
   };
 
   // Bind the resize handler to the window resize event
@@ -129,5 +152,6 @@ var conduct = function(breakpoints) {
   } else if (window.attachEvent)  {
     window.attachEvent('onresize', resize);
   }
+
 
 };
