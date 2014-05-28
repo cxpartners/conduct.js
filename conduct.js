@@ -42,116 +42,98 @@
  * The logic behind this is that you tend to want to unmatch a "desktop" breakpoint before matching
  * a "mobile" breakpoint.
  */
+
+
 var conduct = function(breakpoints) {
-  'use strict';
+    'use strict';
 
-  // Timeout to allow us to debounce the resize event
-  var debounce = null;
-  // Keep track of the window width between resize events so that we can know whether we are resizing up or down
-  var windowSize = window.innerWidth;
+    // Timeout to allow us to debounce the resize event
+    var debounce = null;
+    // Keep track of the window width between resize events so that we can know whether we are resizing up or down
+    var windowSize = window.innerWidth;
 
-  // Allow for user extending of timeout delay
-  // http://andrewdupont.net/2009/08/28/deep-extending-objects-in-javascript/
-  Object.extend = function(destination, source) {
-    for (var property in source) {
-      if (source[property] && source[property].constructor &&
-        source[property].constructor === Object) {
-        destination[property] = destination[property] || {};
-        arguments.callee(destination[property], source[property]);
-      } else {
-        destination[property] = source[property];
-      }
-    }
-    return destination;
-  };
+    breakpoints.timeout = breakpoints.timeout || 300;
 
-  // sensible default for timeout and other configurables
-  var defaults = {
-    'timeout': 300
-  };
 
-  var queries = Object.extend(defaults, breakpoints);
+    /**
+     * Main function which is used to apply a given media query / callback combination
+     */
+    var apply = function(breakpoint) {
+        // Does the media query match?
+        if (window.matchMedia(breakpoint.query).matches) {
+            // Yes, this breakpoint is active
+            // If it *wasn't* active last time we tested, then we have moved from an unmatched to a matched state
+            if (!breakpoint.matched) {
 
-  /**
-   * Main function which is used to apply a given media query / callback combination
-   */
-  var apply = function(breakpoint) {
-    // Does the media query match?
-    if(window.matchMedia(breakpoint.query).matches) {
-      // Yes, this breakpoint is active
-      // If it *wasn't* active last time we tested, then we have moved from an unmatched to a matched state
-      if(!breakpoint.matched) {
+                // Run the match callback and record this breakpoint as being currently matched
+                setTimeout(function() {
+                    breakpoint.match();
+                    breakpoint.matched = true;
+                }, 0);
+            }
+        } else {
+            // No, the breakpoint is not active
+            // If it *was* active last time we tested, we have moved from a matched to an unmatched state
+            if (breakpoint.matched) {
 
-        // Run the match callback and record this breakpoint as being currently matched
-        setTimeout(function() {
-          breakpoint.match();
-          breakpoint.matched = true;
-        }, 0);
-      }
-    } else {
-      // No, the breakpoint is not active
-      // If it *was* active last time we tested, we have moved from a matched to an unmatched state
-      if(breakpoint.matched) {
-
-        // Run the unmatch callback and record this breakpoint as being not currently matched
-        setTimeout(function() {
-          breakpoint.unmatch();
-          breakpoint.matched = false;
-        }, 0);
-      }
-    }
-  };
-
-  /**
-   * Init
-   * On page load, run over all the available breakpoints and apply them all
-   */
-  for (var i=0; i<queries.media_queries.length; i++) {
-
-    // By default, we'll record that the breakpoint is not matched
-    queries.media_queries[i].matched = false;
-
-    // And then attempt to apply the breakpoint callback if it matches
-    apply(queries.media_queries[i]);
-  }
-
-  /**
-   * Main resize handler
-   */
-  var resize = function() {
-
-    // Debounce the resize event
-    clearTimeout(debounce);
-    debounce = setTimeout(function() {
-
-      // If the last recorded window size was more than current, then we are resizing down
-      if(windowSize > window.innerWidth) {
-
-        // Apply the breakpoints in reverse order, starting with the last one in the array
-        for (var i=queries.media_queries.length-1; i >= 0; i--) {
-          apply(queries.media_queries[i]);
+                // Run the unmatch callback and record this breakpoint as being not currently matched
+                setTimeout(function() {
+                    breakpoint.unmatch();
+                    breakpoint.matched = false;
+                }, 0);
+            }
         }
+    };
 
-      } else if (windowSize < window.innerWidth) {
-        // Else if the last recorded window size was less than current, we are resizing up
-        // Apply the breakpoints in normal, ascending order starting with the first one in the array
-        for (var j=0; j<queries.media_queries.length; j++) {
-          apply(queries.media_queries[j]);
-        }
-      }
+    /**
+     * Init
+     * On page load, run over all the available breakpoints and apply them all
+     */
+    for (var i = 0; i < breakpoints.media_queries.length; i++) {
 
-      // Record the current width of the window so we can compare it on the next resize event
-      windowSize = window.innerWidth;
+        // By default, we'll record that the breakpoint is not matched
+        breakpoints.media_queries[i].matched = false;
 
-    }, queries.timeout);
-  };
+        // And then attempt to apply the breakpoint callback if it matches
+        apply(breakpoints.media_queries[i]);
+    }
 
-  // Bind the resize handler to the window resize event
-  if (window.addEventListener) {
-    window.addEventListener('resize', resize, false);
-  } else if (window.attachEvent)  {
-    window.attachEvent('onresize', resize);
-  }
+    /**
+     * Main resize handler
+     */
+    var resize = function() {
 
+        // Debounce the resize event
+        clearTimeout(debounce);
+        debounce = setTimeout(function() {
+
+            // If the last recorded window size was more than current, then we are resizing down
+            if (windowSize > window.innerWidth) {
+
+                // Apply the breakpoints in reverse order, starting with the last one in the array
+                for (var i = breakpoints.media_queries.length - 1; i >= 0; i--) {
+                    apply(breakpoints.media_queries[i]);
+                }
+
+            } else if (windowSize < window.innerWidth) {
+                // Else if the last recorded window size was less than current, we are resizing up
+                // Apply the breakpoints in normal, ascending order starting with the first one in the array
+                for (var j = 0; j < breakpoints.media_queries.length; j++) {
+                    apply(breakpoints.media_queries[j]);
+                }
+            }
+
+            // Record the current width of the window so we can compare it on the next resize event
+            windowSize = window.innerWidth;
+
+        }, breakpoints.timeout);
+    };
+
+    // Bind the resize handler to the window resize event
+    if (window.addEventListener) {
+        window.addEventListener('resize', resize, false);
+    } else if (window.attachEvent) {
+        window.attachEvent('onresize', resize);
+    }
 
 };
