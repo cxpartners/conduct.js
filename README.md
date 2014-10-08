@@ -12,7 +12,7 @@ Basic usage is as follows:
         'media_queries':
         [
           {
-            query: 'max-width: 600px',
+            query: '(max-width: 600px)',
             match: function() {
               // This code will run when this media query moves from an unmatched state to a matched state
             },
@@ -21,7 +21,7 @@ Basic usage is as follows:
             }
           },
           {
-            query: 'min-width: 601px',
+            query: '(min-width: 601px)',
             match: function() {
               // This code will run when this media query moves from an unmatched state to a matched state
             },
