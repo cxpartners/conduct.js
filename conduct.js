@@ -137,3 +137,7 @@ var conduct = function(breakpoints) {
     }
 
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = conduct;
+}
