@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Conduct.js demo</title>
+
+    <style type="text/css">
+      html {
+        box-sizing: border-box;
+      }
+
+      * {
+        box-sizing: inherit;
+      }
+
+      body {
+        max-width: 75%;
+        margin: 20px auto;
+      }
+
+      .log-wrapper {
+        height: 250px;
+        overflow: scroll;
+      }
+
+      .log {
+        min-height: 100%;
+      }
+
+      .script,
+      .log {
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color: #eee;
+        display: block;
+      }
+
+      .script {
+        overflow-x: scroll;
+      }
+    </style>
+  </head>
+
+  <body>
+    <p>Resize the window to see the callbacks being applied as the window resizes at the 600px mark.</p>
+
+    <p>Alternatively, press <button id="button">this button</button> to force a manual re-evaluation of the current breakpoints</p>
+
+    <div class="log-wrapper"><div class="log"></div></div>
+
+    <script src="../src/conduct.js"></script>
+    <script>var log = document.querySelector('.log');var log_wrapper = document.querySelector('.log-wrapper');function debug(message) {var el = document.createElement('div');el.innerHTML = message;log.appendChild(el);log_wrapper.scrollTop=log.clientHeight;}</script>
+
+    <script id="conduct">
+      var conduct = new Conduct({
+        'media_queries': [
+          {
+            query: '(max-width: 600px)',
+            match: function() {
+              debug('<strong>MATCHED:</strong> <code>max-width: 600px</code>');
+            },
+            unmatch: function() {
+              debug('<strong>UNMATCHED:</strong> <code>max-width: 600px</code>');
+            }
+          },
+          {
+            query: '(min-width: 601px)',
+            match: function() {
+              debug('<strong>MATCHED:</strong> <code>min-width: 601px</code>');
+            },
+            unmatch: function() {
+              debug('<strong>UNMATCHED:</strong> <code>min-width: 601px</code>');
+            }
+          }
+        ]
+      });
+
+      // Click handler for the manual evaluation button
+      document.getElementById('button').addEventListener('click', function(e) {
+        conduct.evaluate();
+      })
+    </script>
+
+    <p>The code running this demo is as follows</p>
+
+    <code class="script">
+      <pre>
+        <script>
+          var script = document.getElementById('conduct');
+          document.write(script.innerHTML);
+        </script>
+      </pre>
+    </code>
+  </body>
+</html>
