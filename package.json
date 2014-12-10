@@ -2,7 +2,7 @@
   "name": "conduct.js",
   "version": "0.0.1",
   "description": "conduct.js allows JavaScript to respond to media queries by executing callbacks as breakpoints are matched and unmatched",
-  "main": "conduct.js",
+  "main": "src/conduct.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,5 +14,9 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/andymantell/conduct.js/issues"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.10.0"
   }
 }
