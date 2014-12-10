@@ -7,7 +7,7 @@ Basic usage
 -----------
 Basic usage is as follows:
 
-    conduct(
+    var conduct = new Conduct(
       {
         'media_queries':
         [
