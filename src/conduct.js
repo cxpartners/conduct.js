@@ -82,7 +82,10 @@
 
           // Run the match callback and record this breakpoint as being currently matched
           setTimeout(function() {
-            breakpoint.match();
+            if(typeof(breakpoint.match) === 'function') {
+              breakpoint.match();
+            }
+
             breakpoint.matched = true;
           }, 0);
         }
@@ -93,7 +96,10 @@
 
           // Run the unmatch callback and record this breakpoint as being not currently matched
           setTimeout(function() {
-            breakpoint.unmatch();
+            if(typeof(breakpoint.unmatch) === 'function') {
+              breakpoint.unmatch();
+            }
+
             breakpoint.matched = false;
           }, 0);
         }
