@@ -154,7 +154,7 @@
       'evaluate': evaluate
     };
 
-  };
+  }
 
   // Expose as a CommonJS module for browserify
   if (typeof module !== 'undefined' && module.exports) {
