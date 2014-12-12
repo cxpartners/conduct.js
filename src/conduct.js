@@ -50,9 +50,15 @@
 
     // Timeout to allow us to debounce the resize event
     var debounce = null;
+
     // Keep track of the window width between resize events so that we can know whether we are resizing up or down
     var windowSize = window.innerWidth;
 
+    // Fail gracefully if no configuration is specified
+    breakpoints = breakpoints || {};
+    breakpoints.media_queries = breakpoints.media_queries || [];
+
+    // Set default timeout value
     breakpoints.timeout = breakpoints.timeout || 300;
 
     /**

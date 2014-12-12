@@ -3,6 +3,7 @@ module.exports = function (grunt) {
   'use strict';
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-karma');
 
   grunt.initConfig({
 
@@ -19,6 +20,18 @@ module.exports = function (grunt) {
         jshintrc: '.jshintrc'
       },
       src: ['src/**/*.js']
+    },
+
+    /**
+     * Run automated JS tests.
+     */
+    karma: {
+      options: {
+        configFile: 'karma.conf.js'
+      },
+      dev: {
+        reporters: 'dots'
+      }
     }
 
   });
