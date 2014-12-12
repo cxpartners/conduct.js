@@ -1,5 +1,6 @@
 conduct.js
 ==========
+[![Build Status](https://travis-ci.org/cxpartners/conduct.js.svg)](https://travis-ci.org/cxpartners/conduct.js)
 
 conduct.js allows JavaScript to respond to media queries by executing callbacks as breakpoints are matched and unmatched. It is inspired by [enquire.js](https://github.com/WickyNilliams/enquire.js/) and arose from the need to gain additional control over the order of execution of breakpoint callbacks.
 
