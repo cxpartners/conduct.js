@@ -26,6 +26,7 @@
 *       },
 *       {
 *         query: 'min-width: 601px',
+*         fallback: true,
 *         match: function() {
 *           // This code will run when this media query moves from an unmatched state to a matched state
 *         },
@@ -80,6 +81,18 @@
     * Main function which is used to apply a given media query / callback combination
     */
     function apply(breakpoint) {
+
+      // If this browser doesn't support matchMedia, just match all breakpoints that are marked as fallbacks
+      if(typeof(window.matchMedia) !== 'function') {
+        if(breakpoint.fallback && !breakpoint.matched) {
+          breakpoint.match();
+          breakpoint.matched = true;
+        }
+
+        // And then bail out, there's nothing more to do
+        return;
+      }
+
       // Does the media query match?
       if (window.matchMedia(breakpoint.query).matches) {
         // Yes, this breakpoint is active
@@ -146,11 +159,15 @@
     // Kick off an initial evaluation of breakpoints
     evaluate();
 
-    // Bind the resize handler to the window resize event
-    if (window.addEventListener) {
-      window.addEventListener('resize', resize, false);
-    } else if (window.attachEvent) {
-      window.attachEvent('onresize', resize);
+    // If we've got matchMedia support...
+    if(typeof(window.matchMedia) === 'function') {
+
+      // Bind the resize handler to the window resize event
+      if (window.addEventListener) {
+        window.addEventListener('resize', resize, false);
+      } else if (window.attachEvent) {
+        window.attachEvent('onresize', resize);
+      }
     }
 
     /**
