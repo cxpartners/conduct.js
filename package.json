@@ -1,6 +1,6 @@
 {
   "name": "conduct.js",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "conduct.js allows JavaScript to respond to media queries by executing callbacks as breakpoints are matched and unmatched",
   "main": "src/conduct.js",
   "scripts": {
@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/andymantell/conduct.js.git"
+    "url": "git://github.com/cxpartners/conduct.js.git"
   },
-  "author": "",
+  "author": "andymantell",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/andymantell/conduct.js/issues"
+    "url": "https://github.com/cxpartners/conduct.js/issues"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
