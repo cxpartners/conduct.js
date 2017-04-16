@@ -174,7 +174,7 @@
     * Public methods
     */
     return {
-      'evaluate': evaluate
+      'foo': evaluate
     };
 
   }
